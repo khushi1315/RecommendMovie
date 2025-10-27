@@ -1,0 +1,84 @@
+.homepage-root {
+  background: radial-gradient(ellipse, #900, #300);
+  min-height: 100vh;
+  color: #fff;
+  padding: 2rem;
+}
+
+.top-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.top-nav input {
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  border: none;
+}
+.hero {
+  margin: 1.5rem 0;
+}
+.hero h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+.hero p {
+  margin: 0.5em 0 1em 0;
+}
+.hero button {
+  background: #f93;
+  padding: 0.6em 1.5em;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+.highlight { color: gold; }
+.movie-grid {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.2em;
+}
+.movie-card {
+  background: #421111;
+  padding: 1rem;
+  border-radius: 15px;
+  width: 180px;
+  text-align: center;
+  box-shadow: 0 0 8px #211;
+}
+.movie-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.movie-card button {
+  background: #f93;
+  padding: 0.5em 1.1em;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 8px;
+}
+/* Remove blue/underline from navigation links */
+.top-nav ul li a, .top-nav ul li a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Optionally: style active nav (optional) */
+.top-nav ul li a.active {
+  font-weight: bold;
+  color: gold; /* or your highlight color */
+}

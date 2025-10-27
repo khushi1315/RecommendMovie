@@ -1,0 +1,46 @@
+.dashboard-root {
+  max-width: 1020px;
+  margin: 40px auto;
+  color: #fff;
+}
+
+.dashboard-root h2 {
+  text-align: center;
+  margin-bottom: 2.2em;
+  color: gold;
+  font-size: 2.2em;
+}
+
+/* Uses the same grid as homepage cards */
+.movie-grid {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2.2em;
+}
+
+.movie-card {
+  background: #421111;
+  padding: 1rem 1.2rem;
+  border-radius: 15px;
+  width: 190px;
+  text-align: center;
+  box-shadow: 0 0 8px #211, 0 2px 7px #9008;
+  margin-bottom: 18px;
+}
+
+.movie-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: .7em;
+}
+
+.movie-card h4 {
+  color: gold;
+  font-size: 1.13em;
+  margin: .9em 0 .4em 0;
+  font-weight: bold;
+}

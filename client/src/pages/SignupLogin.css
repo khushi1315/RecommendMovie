@@ -1,0 +1,71 @@
+.auth-box {
+  background: #fbeee3;
+  padding: 2.2em 2.4em 1.2em 2.4em;
+  border-radius: 18px;
+  box-shadow: 0 10px 45px #300B, 0 2px 16px #9008;
+  min-width: 320px;
+  text-align: center;
+}
+.auth-box input {
+  display: block;
+  width: 95%;
+  margin: 1.1em auto 0.7em auto;
+  padding: 0.85em;
+  border-radius: 7px;
+  border: 1px solid #c1bdbd;
+  font-size: 1.07em;
+}
+.main-btn {
+  width: 100%;
+  background: #ed872d;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.7em 0;
+  border: none;
+  border-radius: 8px;
+  margin-top: 0.6em;
+  font-size: 1.1em;
+  transition: background 0.21s;
+  cursor: pointer;
+}
+.main-btn:hover {
+  background: #f93;
+}
+.google-btn {
+  width: 100%;
+  background: #fff;
+  color: #262626;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 0.7em 0;
+  font-size: 1em;
+  margin-top: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .7em;
+}
+.signup-link {
+  color: #ed872d;
+  cursor: pointer;
+  font-weight: bold;
+}
+.above-footer-blurb {
+  background: #600;
+  padding: 1.2em 2em;
+  border-radius: 10px;
+  margin: 22px auto 0 auto;
+  width: fit-content;
+  font-size: 1.13em;
+  box-shadow: 0 0 9px #211;
+}
+.footer-links {
+  text-align: center;
+  margin: 28px 0 0 0;
+  color: #eee;
+  font-size: 1.02em;
+}
+.auth-error {
+  color: #900;
+  margin-top: 7px;
+}
