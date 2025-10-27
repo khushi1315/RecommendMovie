@@ -14,7 +14,8 @@ const FLASK_API_URL = "https://recommendmovie-flask.onrender.com";
 // ✅ Route to forward recommendation requests to Flask
 app.post("/api/recommend", async (req, res) => {
   try {
-    const response = await axios.post(`${FLASK_API_URL}/recommend`, req.body);
+   const response = await axios.post(`${FLASK_API_URL}/api/recommend`, req.body);
+
     res.json(response.data);
   } catch (error) {
     console.error("Error calling Flask API:", error.message);
