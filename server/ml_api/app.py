@@ -148,7 +148,7 @@ def get_recommendations(user_id):
     recommended_movies = movies_df[movies_df["movieId"].isin(recommended_movie_ids)]
     return recommended_movies
 
-@app.route("/recommend", methods=["POST"])
+@app.route("/api/recommend", methods=["POST"])
 def recommend():
     data = request.json
     use_ml = data.get("use_ml", False)

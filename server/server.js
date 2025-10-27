@@ -26,6 +26,14 @@ app.post("/api/recommend", async (req, res) => {
 app.use("/api/movies", require("./routes/movies"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/ratings", require("./routes/rating"));
+const path = require("path");
+
+// Serve frontend
+app.use(express.static(path.join(__dirname, "client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
 
 // Server listen
 const PORT = process.env.PORT || 5000;
