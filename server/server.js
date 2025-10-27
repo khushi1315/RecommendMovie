@@ -18,11 +18,13 @@ app.use('/api/ratings', require('./routes/rating'));
 // app.use('/api/recommendation', require('./routes/recommendation'));
 
 // const axios = require('axios');
-
+const FLASK_API_URL = "https://recommendmovie-flask.onrender.com";
+app.use(express.json());
 app.post('/api/recommend', async (req, res) => {
+  
   const userData = req.body;
   try {
-    const response = await axios.post('http://localhost:5001/recommend', userData);
+    const response = await axios.post(`${FLASK_API_URL}/recommend`, req.body);
     res.json(response.data);
   } catch (err) {
     res.status(500).json({ error: 'ML service error' });
