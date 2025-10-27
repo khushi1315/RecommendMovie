@@ -17,13 +17,19 @@ export default function Dashboard() {
     setShowModal(false);
 
     // Send questionnaire data to backend (adjust endpoint as needed)
-    fetch(`${process.env.REACT_APP_API_URL}/api/recommend`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(answers),
-    })
-      .then(res => res.json())
-      .then(data => setRecommendations(data.recommendations || []));
+    fetch("https://recommendmovieserver.onrender.com/api/recommend", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(answers),
+})
+
+    // fetch(`${process.env.REACT_APP_API_URL}/api/recommend`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(answers),
+    // })
+    //   .then(res => res.json())
+    //   .then(data => setRecommendations(data.recommendations || []));
   };
 
   // For demo, if already filled, fetch on first mount:
