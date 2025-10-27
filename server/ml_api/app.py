@@ -126,6 +126,8 @@ class RecommenderNet(keras.Model):
 
 # ==== Load Pretrained Model ====
 model = RecommenderNet(num_users, num_movies, embedding_size=50)
+model.build(input_shape=(None, 2))
+
 model.load_weights("my_model.weights.h5")
 
 
