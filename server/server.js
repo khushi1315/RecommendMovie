@@ -1,12 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios"); // ✅ required for Flask API call
-
+const apiRouter = require('./routes/api'); // or correct file path
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json()); // ✅ no need for bodyParser separately
+
+app.use("/api/...", apiRouter)
 
 // Flask API base URL
 const FLASK_API_URL = "https://recommendmovie-flask.onrender.com";
@@ -32,7 +34,7 @@ const path = require("path");
 // Serve frontend
 app.use(express.static(path.join(__dirname, "client/build")));
 
-app.get("*", (req, res) => {
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 

@@ -1,7 +1,7 @@
-import express from "express";
-import axios from "axios";
-
+const express = require('express');
+const axios = require('axios');
 const router = express.Router();
+
 const FLASK_API_URL = "https://recommendmovie-flask.onrender.com";
 
 router.post("/", async (req, res) => {
@@ -14,4 +14,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router; // <--- COMMONJS EXPORT
