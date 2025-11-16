@@ -10,40 +10,20 @@ export default function RatingsPage() {
   );
   const [immediateRateMovieIds, setImmediateRateMovieIds] = useState(() =>
     JSON.parse(localStorage.getItem("immediateRateMovieIds") || "[]")
-  ); // movie(s) clicked Rate Now on homepage
+  );
   const [ratings, setRatings] = useState(() =>
     JSON.parse(localStorage.getItem("ratings") || "{}")
   );
-  const [posters, setPosters] = useState({});
   const [showPopup, setShowPopup] = useState(null);
 
   // Fetch all movies on mount
   useEffect(() => {
-     fetch(`${process.env.REACT_APP_FLASK_API_URL}/api/movies`)
-      .then(res => res.json())
-      .then(data => setAllMovies(data));
+    fetch(`${process.env.REACT_APP_FLASK_API_URL}/api/movies`)
+      .then((res) => res.json())
+      .then((data) => setAllMovies(data));
   }, []);
 
-  // Fetch posters for movies
-  useEffect(() => {
-    const moviesToLoad = [...immediateRateMovieIds, ...ratedMovieIds];
-    moviesToLoad.forEach(movieId => {
-      if (
-        movieId &&
-        !posters[movieId] &&
-        allMovies.find(m => m.movieId === movieId)?.tmdbId
-      ) {
-        const tmdbId = allMovies.find(m => m.movieId === movieId).tmdbId;
-        getTmdbPosterUrl(tmdbId).then(url => {
-          if (url) {
-            setPosters(prev => ({ ...prev, [movieId]: url }));
-          }
-        });
-      }
-    });
-  }, [allMovies, immediateRateMovieIds, ratedMovieIds, posters]);
-
-  // Persist localStorage
+  // Persist localStorage for ratings, ratedMovieIds, immediateRateMovieIds
   useEffect(() => {
     localStorage.setItem("ratings", JSON.stringify(ratings));
   }, [ratings]);
@@ -58,22 +38,25 @@ export default function RatingsPage() {
 
   // On star click to rate a movie
   const handleRating = (movieId, value) => {
-    setRatings(prev => ({ ...prev, [movieId]: value }));
+    setRatings((prev) => ({ ...prev, [movieId]: value }));
     if (!ratedMovieIds.includes(movieId)) {
-      setRatedMovieIds(prev => [...prev, movieId]);
+      setRatedMovieIds((prev) => [...prev, movieId]);
     }
-    // Remove from immediate rate list once rated
     if (immediateRateMovieIds.includes(movieId)) {
-      setImmediateRateMovieIds(prev => prev.filter(id => id !== movieId));
+      setImmediateRateMovieIds((prev) => prev.filter((id) => id !== movieId));
     }
     setShowPopup(movieId);
     setTimeout(() => setShowPopup(null), 2000);
   };
 
   // Filter movies for display
-  const immediateRateMovies = allMovies.filter(m => immediateRateMovieIds.includes(m.movieId));
-  const ratedMovies = allMovies.filter(m => ratedMovieIds.includes(m.movieId) && !immediateRateMovieIds.includes(m.movieId));
-  const initialShowMovies = allMovies.slice(0, 30); // first 30 movies to show initially
+  const immediateRateMovies = allMovies.filter((m) =>
+    immediateRateMovieIds.includes(m.movieId)
+  );
+  const ratedMovies = allMovies.filter(
+    (m) => ratedMovieIds.includes(m.movieId) && !immediateRateMovieIds.includes(m.movieId)
+  );
+  const initialShowMovies = allMovies.slice(0, 30); // first 30 movies initially
 
   // Show initial movies if user has rated no movies
   const showInitial = ratedMovieIds.length === 0 && immediateRateMovieIds.length === 0;
@@ -86,11 +69,10 @@ export default function RatingsPage() {
           <>
             <h2>Rate These Movies to Get Started</h2>
             <div className="movie-grid">
-              {initialShowMovies.map(movie => (
+              {initialShowMovies.map((movie) => (
                 <MovieCard
                   key={movie.movieId}
                   movie={movie}
-                  poster={posters[movie.movieId]}
                   rating={ratings[movie.movieId]}
                   onRate={handleRating}
                 />
@@ -103,11 +85,10 @@ export default function RatingsPage() {
               <>
                 <h2>Rate Now</h2>
                 <div className="movie-grid">
-                  {immediateRateMovies.map(movie => (
+                  {immediateRateMovies.map((movie) => (
                     <MovieCard
                       key={movie.movieId}
                       movie={movie}
-                      poster={posters[movie.movieId]}
                       rating={ratings[movie.movieId]}
                       onRate={handleRating}
                     />
@@ -120,11 +101,10 @@ export default function RatingsPage() {
               <p>No rated movies yet.</p>
             ) : (
               <div className="movie-grid">
-                {ratedMovies.map(movie => (
+                {ratedMovies.map((movie) => (
                   <MovieCard
                     key={movie.movieId}
                     movie={movie}
-                    poster={posters[movie.movieId]}
                     rating={ratings[movie.movieId]}
                     onRate={handleRating}
                   />
@@ -133,25 +113,35 @@ export default function RatingsPage() {
             )}
           </>
         )}
-
         {showPopup !== null && <div className="rating-popup">Rating Submitted!</div>}
       </div>
     </div>
   );
 }
 
+// Movie card component with local poster state, consistent with HomePage
+function MovieCard({ movie, rating, onRate }) {
+  const [poster, setPoster] = useState(movie.poster_url || null);
 
-// Separate component for each movie card
-function MovieCard({ movie, poster, rating, onRate }) {
+  useEffect(() => {
+    if (!poster && movie.tmdbId) {
+      getTmdbPosterUrl(movie.tmdbId).then(setPoster);
+    }
+  }, [movie.tmdbId, poster]);
+
   return (
     <div className="movie-card">
-      <img src={poster || "https://via.placeholder.com/150"} alt={movie.title} />
+      <img src={poster || "https://via.placeholder.com/150?text=No+Image"} alt={movie.title} />
       <h4>{movie.title}</h4>
       <div>
-        {[1, 2, 3, 4, 5].map(num => (
+        {[1, 2, 3, 4, 5].map((num) => (
           <span
             key={num}
-            style={{ color: rating >= num ? "gold" : "#aaa", cursor: "pointer", fontSize: "1.5em" }}
+            style={{
+              color: rating >= num ? "gold" : "#aaa",
+              cursor: "pointer",
+              fontSize: "1.5em",
+            }}
             onClick={() => onRate(movie.movieId, num)}
           >
             ★
