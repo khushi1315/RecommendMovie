@@ -1,36 +1,47 @@
-.ratings-root {
-  padding: 2em;
-  color: #fff;
-  background: #2a0606;
-  min-height: 90vh;
+.rating-popup {
+  position: fixed;
+  top: 16vmin;
+  right: 3vmin;
+  background: #fae7ac;
+  color: #a16e1a;
+  border-radius: 12px;
+  font-size: 1.1em;
+  padding: 16px 28px;
+  box-shadow: 2px 4px 18px rgba(100,80,20,0.2);
+  z-index: 200;
+  animation: fadeIn 0.5s;
 }
-.movie-grid {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  margin-bottom: 2em;
-}
-.movie-card {
-  background: #411;
-  padding: 1.2em;
-  border-radius: 15px;
-  width: 220px;
-  text-align: center;
-  box-shadow: 0 0 10px #0006;
-}
-.movie-card img {
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-  border-radius: 8px;
+.movie-card.highlight {
+  border: 3px solid gold;
+  box-shadow: 0 0 15px gold;
 }
 .submit-btn {
-  background: #f93;
-  color: #fff;
-  border-radius: 8px;
+  background-color: #ffd966;
   border: none;
-  padding: 12px 28px;
-  font-size: 1.1em;
-  margin-top: 1.2em;
+  padding: 12px 24px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #a16e1a;
+  border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 4px 6px rgba(255, 217, 102, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 20px;
+  display: inline-block;
+  user-select: none;
 }
+
+.submit-btn:hover {
+  background-color: #bd9207;
+  box-shadow: 0 6px 12px rgba(255, 202, 26, 0.6);
+}
+
+.submit-btn:active {
+  background-color: #e6b800;
+  box-shadow: 0 3px 6px rgba(230, 184, 0, 0.7);
+}
+
+@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+.star { cursor: pointer; font-size: 2em; color: #ccc; transition: color 0.2s;}
+.star-selected { color: gold; }
+.movie-card.highlight { box-shadow: 0 0 14px 3px #ffd966; border: 2px solid gold; }

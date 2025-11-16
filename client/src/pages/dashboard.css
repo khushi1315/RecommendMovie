@@ -28,6 +28,9 @@
   text-align: center;
   box-shadow: 0 0 8px #211, 0 2px 7px #9008;
   margin-bottom: 18px;
+   word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .movie-card img {
@@ -43,4 +46,20 @@
   font-size: 1.13em;
   margin: .9em 0 .4em 0;
   font-weight: bold;
+}
+.movie-card h4,
+.movie-card div {
+  word-break: break-word;
+  white-space: normal;
+  /* Ensure overflow is handled for multi-line text */
+  overflow-wrap: break-word;
+}
+
+.movie-card div {
+  display: block;
+  font-size: 1em;
+  line-height: 1.4;
+  margin-top: 0.3em;
+  color: #fff;
+  /* If you want vertical stacking, you can split by '|' in render code, but CSS won't split */
 }

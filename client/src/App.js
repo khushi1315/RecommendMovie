@@ -1,3 +1,5 @@
+import React from 'react';
+
 import HomePage from "./pages/homepage";
 import About from "./pages/About";
 import SignupLogin from "./pages/SignupLogin";

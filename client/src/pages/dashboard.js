@@ -3,7 +3,7 @@ import Header from "./Header";
 import Questionnaire from "./Questionnaire";
 
 export default function Dashboard() {
-   
+
 
 
   // const [showModal, setShowModal] = useState(() => !localStorage.getItem("questionnaireFilled"));
@@ -23,13 +23,18 @@ export default function Dashboard() {
       body: JSON.stringify(answers),
     })
       .then(res => res.json())
-      .then(data => setRecommendations(data.recommendations || []));
+      .then(data => {
+        console.log("Full API response:", data);
+        setRecommendations(Array.isArray(data.recommendations) ? data.recommendations : data || []);
+      });
+
+
   };
 
   // For demo, if already filled, fetch on first mount:
   useEffect(() => {
     if (!showModal) {
-      fetch(`${process.env.REACT_APP_API_URL}/api/recommend`,{
+      fetch(`${process.env.REACT_APP_API_URL}/api/recommend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
@@ -50,19 +55,24 @@ export default function Dashboard() {
       />
       {!showModal && (
         <div className="dashboard-root">
-          <h2>Your Top 10 Personalized Bollywood Movies</h2>
+          <h2>Your Top 10 Personalized Movies</h2>
           <div className="movie-grid">
-            {recommendations.map((movie, idx) => (
-              <div className="movie-card" key={movie.movieId || idx}>
-                <h4>{movie.title}</h4>
-                <div>{movie.genres}</div>
-              </div>
-            ))}
+            {recommendations.length === 0 ? (
+              <p>No recommendations found for your input.</p>
+            ) : (
+              recommendations.map((movie, idx) => (
+                <div className="movie-card" key={movie.movieId || idx}>
+                  <h4>{movie.title || "No title"}</h4>
+                  <div>{movie.genres || "No genres"}</div>
+                </div>
+              ))
+            )}
           </div>
+
         </div>
       )}
-      
+
     </div>
   );
-  
+
 }

@@ -2,9 +2,10 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
+// Use environment variable with fallback to localhost for Flask URL
+const FLASK_URL = process.env.FLASK_API_URL || "http://localhost:5000";
 
-const FLASK_URL = "https://recommendmovie-flask.onrender.com/";
- // set this in your Render backend env settings
+// This environment variable should be set in your Render backend settings
 
 router.post("/", async (req, res) => {
   try {
@@ -14,6 +15,5 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "ML API Error" });
   }
 });
-
 
 module.exports = router;

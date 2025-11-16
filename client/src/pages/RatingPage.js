@@ -1,80 +1,162 @@
-import React, { useState } from "react";
-import "./RatingsPage.css"; // style as needed
+import React, { useState, useEffect } from "react";
+import "./RatingsPage.css";
 import Header from "../pages/Header";
-
-const moviesToRate = [
-  {
-    id: 1,
-    title: "Dangal",
-    poster_url: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cJRPOLEexI7qp2DKtFfCh7YaaUG.jpg",
-  },
-  {
-    id: 2,
-    title: "3 Idiots",
-    poster_url: "https://imgeng.jagran.com/images/2024/12/25/article/image/3-idiots-famous-dialogues-1735123998783.jpg",
-  },
-  {
-    id: 3,
-    title: "Bajrangi Bhaijaan",
-    poster_url: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vhlliI7HZZlWfo5d6CiyfBAGLrW.jpg",
-  },
-  {
-    id: 4,
-    title: "Zindagi Na Milegi Dobara",
-    poster_url: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hKO9O715wYxjkQSEv47giCYcyO8.jpg",
-  },
-  {
-    id: 5,
-    title: "Barfi!",
-    poster_url: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5cJIx2zKjDoUtPSliou23xsReb1.jpg",
-  },
-  {
-    id: 6,
-    title: "tummbad",
-    poster_url: "https://tse3.mm.bing.net/th/id/OIP.HW4Op5IkKkaKIXLulu9xiwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",
-  },
-  {
-    id: 7,
-    title: "Gully boy",
-    poster_url: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jZRTMZESWlLqeg5JxdHz8bXlG7p.jpg",
-  }
-];
+import { getTmdbPosterUrl } from "../utils/tmdb";
 
 export default function RatingsPage() {
-  const [ratings, setRatings] = useState({});
+  const [allMovies, setAllMovies] = useState([]);
+  const [ratedMovieIds, setRatedMovieIds] = useState(() =>
+    JSON.parse(localStorage.getItem("ratedMovieIds") || "[]")
+  );
+  const [immediateRateMovieIds, setImmediateRateMovieIds] = useState(() =>
+    JSON.parse(localStorage.getItem("immediateRateMovieIds") || "[]")
+  ); // movie(s) clicked Rate Now on homepage
+  const [ratings, setRatings] = useState(() =>
+    JSON.parse(localStorage.getItem("ratings") || "{}")
+  );
+  const [posters, setPosters] = useState({});
+  const [showPopup, setShowPopup] = useState(null);
 
+  // Fetch all movies on mount
+  useEffect(() => {
+     fetch(`${process.env.REACT_APP_FLASK_API_URL}/api/movies`)
+      .then(res => res.json())
+      .then(data => setAllMovies(data));
+  }, []);
+
+  // Fetch posters for movies
+  useEffect(() => {
+    const moviesToLoad = [...immediateRateMovieIds, ...ratedMovieIds];
+    moviesToLoad.forEach(movieId => {
+      if (
+        movieId &&
+        !posters[movieId] &&
+        allMovies.find(m => m.movieId === movieId)?.tmdbId
+      ) {
+        const tmdbId = allMovies.find(m => m.movieId === movieId).tmdbId;
+        getTmdbPosterUrl(tmdbId).then(url => {
+          if (url) {
+            setPosters(prev => ({ ...prev, [movieId]: url }));
+          }
+        });
+      }
+    });
+  }, [allMovies, immediateRateMovieIds, ratedMovieIds, posters]);
+
+  // Persist localStorage
+  useEffect(() => {
+    localStorage.setItem("ratings", JSON.stringify(ratings));
+  }, [ratings]);
+
+  useEffect(() => {
+    localStorage.setItem("ratedMovieIds", JSON.stringify(ratedMovieIds));
+  }, [ratedMovieIds]);
+
+  useEffect(() => {
+    localStorage.setItem("immediateRateMovieIds", JSON.stringify(immediateRateMovieIds));
+  }, [immediateRateMovieIds]);
+
+  // On star click to rate a movie
   const handleRating = (movieId, value) => {
     setRatings(prev => ({ ...prev, [movieId]: value }));
+    if (!ratedMovieIds.includes(movieId)) {
+      setRatedMovieIds(prev => [...prev, movieId]);
+    }
+    // Remove from immediate rate list once rated
+    if (immediateRateMovieIds.includes(movieId)) {
+      setImmediateRateMovieIds(prev => prev.filter(id => id !== movieId));
+    }
+    setShowPopup(movieId);
+    setTimeout(() => setShowPopup(null), 2000);
   };
 
-  const handleSubmit = () => {
-    alert("Ratings submitted: " + JSON.stringify(ratings));
-    // send to backend here if ready, then navigate to dashboard or recommendations
-  };
+  // Filter movies for display
+  const immediateRateMovies = allMovies.filter(m => immediateRateMovieIds.includes(m.movieId));
+  const ratedMovies = allMovies.filter(m => ratedMovieIds.includes(m.movieId) && !immediateRateMovieIds.includes(m.movieId));
+  const initialShowMovies = allMovies.slice(0, 30); // first 30 movies to show initially
+
+  // Show initial movies if user has rated no movies
+  const showInitial = ratedMovieIds.length === 0 && immediateRateMovieIds.length === 0;
 
   return (
     <div className="homepage-root">
       <Header />
       <div className="ratings-root">
-        <h2>Rate These Movies to Get Started</h2>
-        <div className="movie-grid">
-          {moviesToRate.map(movie => (
-            <div className="movie-card" key={movie.id}>
-              <img src={movie.poster_url} alt={movie.title} />
-              <h4>{movie.title}</h4>
-              <div>
-                {[1, 2, 3, 4, 5].map(num => (
-                  <span
-                    key={num}
-                    style={{ color: ratings[movie.id] >= num ? "gold" : "#aaa", cursor: "pointer", fontSize: "1.5em" }}
-                    onClick={() => handleRating(movie.id, num)}
-                  >★</span>
+        {showInitial ? (
+          <>
+            <h2>Rate These Movies to Get Started</h2>
+            <div className="movie-grid">
+              {initialShowMovies.map(movie => (
+                <MovieCard
+                  key={movie.movieId}
+                  movie={movie}
+                  poster={posters[movie.movieId]}
+                  rating={ratings[movie.movieId]}
+                  onRate={handleRating}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            {immediateRateMovies.length > 0 && (
+              <>
+                <h2>Rate Now</h2>
+                <div className="movie-grid">
+                  {immediateRateMovies.map(movie => (
+                    <MovieCard
+                      key={movie.movieId}
+                      movie={movie}
+                      poster={posters[movie.movieId]}
+                      rating={ratings[movie.movieId]}
+                      onRate={handleRating}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            <h2>Your Rated Movies</h2>
+            {ratedMovies.length === 0 ? (
+              <p>No rated movies yet.</p>
+            ) : (
+              <div className="movie-grid">
+                {ratedMovies.map(movie => (
+                  <MovieCard
+                    key={movie.movieId}
+                    movie={movie}
+                    poster={posters[movie.movieId]}
+                    rating={ratings[movie.movieId]}
+                    onRate={handleRating}
+                  />
                 ))}
               </div>
-            </div>
-          ))}
-        </div>
-        <button className="submit-btn" onClick={handleSubmit}>Submit Ratings</button>
+            )}
+          </>
+        )}
+
+        {showPopup !== null && <div className="rating-popup">Rating Submitted!</div>}
+      </div>
+    </div>
+  );
+}
+
+
+// Separate component for each movie card
+function MovieCard({ movie, poster, rating, onRate }) {
+  return (
+    <div className="movie-card">
+      <img src={poster || "https://via.placeholder.com/150"} alt={movie.title} />
+      <h4>{movie.title}</h4>
+      <div>
+        {[1, 2, 3, 4, 5].map(num => (
+          <span
+            key={num}
+            style={{ color: rating >= num ? "gold" : "#aaa", cursor: "pointer", fontSize: "1.5em" }}
+            onClick={() => onRate(movie.movieId, num)}
+          >
+            ★
+          </span>
+        ))}
       </div>
     </div>
   );

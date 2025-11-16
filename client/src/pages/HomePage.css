@@ -49,12 +49,17 @@
   margin-bottom: 2.2em;
 }
 .movie-card {
-  background: #421111;
-  padding: 1rem;
+
   border-radius: 15px;
   width: 180px;
   text-align: center;
   box-shadow: 0 0 8px #211;
+    background: #421111;
+  padding: 1rem;
+  /* new lines for wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 .movie-card img {
   width: 100%;
@@ -81,4 +86,20 @@
 .top-nav ul li a.active {
   font-weight: bold;
   color: gold; /* or your highlight color */
+}
+.movie-card h4,
+.movie-card div {
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  /* Optionally for even better wrapping: */
+  max-width: 100%;
+}
+/* If you want genre separation visually, add: */
+.movie-card div {
+  display: block;
+  font-size: 1em;
+  line-height: 1.4;
+  margin-top: 0.4em;
+  color: #fff;
 }

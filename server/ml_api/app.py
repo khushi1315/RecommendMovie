@@ -60,7 +60,13 @@ movies_file = movielens_dir / "movies.csv"
 
 df = pd.read_csv(ratings_file)
 tags = pd.read_csv(tags_file)
-movies = pd.read_csv(movies_file)
+movies_file = movielens_dir / "movies.csv"
+links_file = movielens_dir / "links.csv"
+
+movies_df = pd.read_csv(movies_file)
+links_df = pd.read_csv(links_file)
+movies_df = movies_df.merge(links_df[['movieId', 'tmdbId']], on='movieId', how='left')
+
 
 user_ids = df["userId"].unique().tolist()
 user2user_encoded = {x: i for i, x in enumerate(user_ids)}
@@ -78,7 +84,6 @@ df['rating'] = df['rating'].values.astype(np.float32)
 min_rating = min(df["rating"])
 max_rating = max(df["rating"])
 
-movies_df = pd.read_csv(movielens_dir / 'movies.csv')
 
 # ==== Subclassed Model: MUST include config methods ====
 class RecommenderNet(keras.Model):
@@ -151,29 +156,20 @@ def get_recommendations(user_id):
 @app.route("/api/recommend", methods=["POST"])
 def recommend():
     data = request.json
-    use_ml = data.get("use_ml", False)
-    if use_ml:
-        user_id = 1  # or dynamically assign as needed
-        recommended_movies = get_recommendations(user_id)
-        result = [
-            {"title": row["title"], "genres": row["genres"], "movieId": int(row["movieId"])}
-            for _, row in recommended_movies.iterrows()
-        ]
-        return jsonify({"recommendations": result})
-
     fav_genre = data.get("genre")
     fav_year = data.get("year")
-    fav_movie = data.get("favMovie")
-    filtered = movies
 
+    filtered = movies
     if fav_genre and isinstance(fav_genre, str) and fav_genre.strip():
         filtered = filtered[filtered["genres"].str.contains(fav_genre, case=False, na=False)]
 
+    msg = None
     found_matches = True
 
     if fav_year and isinstance(fav_year, str) and fav_year.strip():
         year_mask = filtered["title"].str.contains(str(fav_year), na=False)
         if year_mask.sum() == 0:
+            # fallback to closest earlier year in current genre filter
             all_years = (
                 filtered["title"]
                 .str.extract(r".*\((\d{4})\).*")[0]
@@ -181,31 +177,31 @@ def recommend():
                 .astype(int)
             )
             input_year = int(fav_year)
-            nearest_past_years = all_years[all_years < input_year]
-            if not nearest_past_years.empty:
-                nearest_year = nearest_past_years.max()
+            years_below = all_years[all_years < input_year]
+            if not years_below.empty:
+                nearest_year = years_below.max()
                 filtered = filtered[filtered["title"].str.contains(str(nearest_year), na=False)]
                 found_matches = False
-                msg = (
-                    f"No movies found for {fav_year}. Showing closest results from {nearest_year}."
-                )
+                msg = f"No movies found for {fav_year}. Showing closest results from {nearest_year}."
             else:
-                filtered = filtered
                 found_matches = False
                 msg = "No movies found for this or earlier years."
         else:
             filtered = filtered[year_mask]
-            msg = None
-    else:
-        msg = None
 
     result = filtered.head(10)[["title", "genres", "movieId"]].to_dict("records")
-    response = {
-        "recommendations": result,
-    }
+    response = {"recommendations": result}
     if not found_matches:
         response["message"] = msg
     return jsonify(response)
+
+
+#now added 
+@app.route('/api/movies', methods=['GET'])
+def get_movies():
+    # send tmdbId along with other fields
+    movies_list = movies_df[['movieId', 'title', 'genres', 'tmdbId']].head(30).to_dict(orient='records')
+    return jsonify(movies_list)
 
 if __name__ == "__main__":
     import os
