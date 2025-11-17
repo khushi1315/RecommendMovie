@@ -41,13 +41,17 @@ export default function About() {
         <section id="credits">
           <h3>Credits</h3>
           <p>
-            Our core collaborative filtering algorithm is inspired by the work of&nbsp;
+            This platform is independently built—from the frontend interface (React.js) and backend APIs (Node/Express and Flask)
+            to the core recommendation engine. The <strong>MovieLens 100K dataset</strong> is used as a foundation for generating recommendations.<br />
+            While the collaborative filtering logic was inspired by
             <a href="https://www.kaggle.com/code/faressayah/collaborative-filtering-for-movie-recommendations" target="_blank" rel="noopener noreferrer">
-              Fares Sayah
-            </a>
-            &nbsp;on Kaggle, using the <strong>MovieLens 100K dataset</strong> as a backbone for recommendations.
+              Fares Sayah's Kaggle notebook
+            </a>,
+            the machine learning model and implementation for personalized movie suggestions were developed specifically for this site.<br />
+            This project was developed by <strong>Khushi</strong>.
           </p>
         </section>
+
       </div>
     </div>
   );
