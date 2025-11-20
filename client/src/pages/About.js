@@ -5,53 +5,109 @@ export default function About() {
   return (
     <div className="homepage-root">
       <Header />
-      <div className="about-content" style={{
-        maxWidth: "760px",
-        margin: "40px auto",
-        background: "rgba(35,10,10,0.65)",
-        padding: "28px 30px",
-        color: "#fff",
-        borderRadius: "20px",
-        boxShadow: "0 6px 18px #a005, 0 2px 10px #900b"
-      }}>
-        <h2 style={{ color: "goldenrod", textAlign: "center", marginBottom: "1.2em" }}>
-          About Movie Recommender
+      <div
+        className="about-content"
+        style={{
+          maxWidth: "760px",
+          margin: "40px auto",
+          background: "rgba(35,10,10,0.65)",
+          padding: "28px 30px",
+          color: "#fff",
+          borderRadius: "20px",
+          boxShadow: "0 6px 18px #a005, 0 2px 10px #900b"
+        }}
+      >
+        <h2
+          style={{
+            color: "goldenrod",
+            textAlign: "center",
+            marginBottom: "1.2em"
+          }}
+        >
+          About RecommendMovie
         </h2>
+
         <section id="about">
-          <h2>About Movie Recommender</h2>
+          <h2>About the Project</h2>
+
           <p>
-            Welcome to <strong>RecommendMovie</strong>—a personalized movie discovery platform that curates recommendations from both Bollywood and Hollywood cinema using modern AI and data-driven techniques!
+            <strong>RecommendMovie</strong> is a full-stack movie discovery
+            platform built using <strong>React.js</strong>,
+            <strong> Node/Express</strong>, and <strong>Flask/Python</strong>.
+            It helps users explore films they might enjoy by using both
+            preference-based filtering and machine learning techniques.
           </p>
+
           <p>
-            To begin, visit the <a href="/dashboard">Dashboard</a> where you'll see your top personalized picks based on your previous ratings and preferences. Rate a few movies you know and love—from any genre or language—and watch as the platform tailors its suggestions just for you.
+            The system uses the well-known{" "}
+            <strong>MovieLens dataset</strong> as the core database for movie
+            information. Users can rate movies, select their favorite genres or
+            years, and instantly get suggestions tailored to their taste.
           </p>
+
+          <h3>How Recommendations Work</h3>
+
           <p>
-            Our recommendations are powered by the famous <em>MovieLens dataset</em> and enhanced with collaborative filtering and genre/year insights from a lightweight machine learning model. Whether you love action, drama, comedy, or classics, you'll find new titles to add to your watchlist.
+            RecommendMovie currently supports <strong>two</strong> types of
+            recommendation logic:
           </p>
+
+          <ul>
+            <li>
+              <strong>Rule-Based Recommendations (Live on the Website)</strong>  
+              <br />
+              The website uses lightweight filtering based on:
+              <ul>
+                <li>Preferred genre</li>
+                <li>Release year</li>
+                <li>Smart fallback to the closest year if no match is found</li>
+              </ul>
+              This ensures fast responses and stable performance in deployment.
+            </li>
+
+            
+          </ul>
+
           <p>
-            This site is built with a <strong>React.js</strong> frontend, <strong>Node/Express</strong> for the API, and a robust <strong>Flask/Python</strong> backend for smart recommendation logic—making discovery easy and fun for all movie lovers.
+            This hybrid design keeps the platform fast, scalable, and easy to
+            extend while maintaining a real machine learning component in the
+            backend.
           </p>
+
           <p>
-            🎬 Ready to dive in? Head to the <a href="/dashboard">Dashboard</a>, rate your favorites, and get instant recommendations. Your next great movie night starts here!
-          </p>
-          <p>
-            Enjoy discovering movies from Bollywood, Hollywood, and beyond—and feel free to share any feedback to help us improve!
-          </p>
-        </section>
-        <section id="credits">
-          <h3>Credits</h3>
-          <p>
-            This platform is independently built—from the frontend interface (React.js) and backend APIs (Node/Express and Flask)
-            to the core recommendation engine. The <strong>MovieLens 100K dataset</strong> is used as a foundation for generating recommendations.<br />
-            While the collaborative filtering logic was inspired by
-            <a href="https://www.kaggle.com/code/faressayah/collaborative-filtering-for-movie-recommendations" target="_blank" rel="noopener noreferrer">
-              Fares Sayah's Kaggle notebook
-            </a>,
-            the machine learning model and implementation for personalized movie suggestions were developed specifically for this site.<br />
-            This project was developed by <strong>Khushi</strong>.
+            🎬 Explore your personalized picks on the{" "}
+            <a href="/dashboard">Dashboard</a>—your next great movie night starts
+            here!
           </p>
         </section>
 
+        <section id="credits" style={{ marginTop: "2em" }}>
+          <h3>Credits</h3>
+          <p>
+            The platform was designed and developed end-to-end—from frontend UI
+            to backend APIs—using React.js, Node/Express, and Flask.
+          </p>
+
+          <p>
+            The recommendation dataset comes from the{" "}
+            <strong>MovieLens project</strong>.  
+            The collaborative filtering model architecture was inspired by{" "}
+            <a
+              href="https://www.kaggle.com/code/faressayah/collaborative-filtering-for-movie-recommendations"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Fares Sayah’s Kaggle notebook
+            </a>
+            , but the integration, preprocessing, and training setup were
+            implemented specifically for this platform.
+          </p>
+
+          <p>
+            This project was designed and developed by{" "}
+            <strong>Khushi</strong>.
+          </p>
+        </section>
       </div>
     </div>
   );
