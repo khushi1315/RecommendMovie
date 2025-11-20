@@ -200,7 +200,7 @@ def recommend():
 @app.route('/api/movies', methods=['GET'])
 def get_movies():
     # send tmdbId along with other fields
-    movies_list = movies_df[['movieId', 'title', 'genres', 'tmdbId']].head(30).to_dict(orient='records')
+    movies_list = movies_df[['movieId', 'title', 'genres', 'tmdbId']].tail(30).to_dict(orient='records')
     return jsonify(movies_list)
 
 if __name__ == "__main__":
