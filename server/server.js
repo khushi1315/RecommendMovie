@@ -13,7 +13,7 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 // Routers
 app.use("/api", require("./routes/api"));
 app.use("/api/movies", require("./routes/movies"));
-app.use('/api/users', require('./routes/userRoutes')); 
+app.use('/api/users', require('./routes/userRoutes'));
 app.use("/api/ratings", require("./routes/rating"));
 app.use("/api", require("./routes/signup"));
 
@@ -28,9 +28,10 @@ app.post("/api/recommend", async (req, res) => {
     const response = await axios.post(`${FLASK_API_URL}/api/recommend`, req.body);
     res.json(response.data);
   } catch (error) {
-    console.error("Error calling Flask API:", error.message);
-    res.status(500).json({ error: "ML service error" });
+    console.error("Error calling Flask API:", error.message, error.response?.data); // now logs Flask's error content if present
+    res.status(500).json({ error: "ML service error", details: error.message, flask_response: error.response?.data });
   }
+
 });
 
 app.use((req, res, next) => {

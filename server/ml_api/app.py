@@ -159,7 +159,7 @@ def recommend():
     fav_genre = data.get("genre")
     fav_year = data.get("year")
 
-    filtered = movies
+    filtered = movies_df
     if fav_genre and isinstance(fav_genre, str) and fav_genre.strip():
         filtered = filtered[filtered["genres"].str.contains(fav_genre, case=False, na=False)]
 
